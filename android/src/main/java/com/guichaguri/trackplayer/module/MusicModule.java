@@ -67,16 +67,18 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         binder = (MusicBinder)service;
-        connecting = false;
+	if ( binder != null ) {
+            connecting = false;
 
-        // Reapply options that user set before with updateOptions
-        if (options != null) {
-            binder.updateOptions(options);
-        }
+            // Reapply options that user set before with updateOptions
+            if (options != null) {
+                binder.updateOptions(options);
+            }
 
-        // Triggers all callbacks
-        while(!initCallbacks.isEmpty()) {
-            binder.post(initCallbacks.remove());
+            // Triggers all callbacks
+            while(!initCallbacks.isEmpty()) {
+                binder.post(initCallbacks.remove());
+            }
         }
     }
 
@@ -325,17 +327,17 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
 
     @ReactMethod
     public void skip(final String track, final Promise callback) {
-        waitForConnection(() -> { if ( binder != null ) { binder.getPlayback().skip(track, callback); }});
+        waitForConnection(() -> { if ( binder != null && binder.getPlayback() != null ) { binder.getPlayback().skip(track, callback); }});
     }
 
     @ReactMethod
     public void skipToNext(final Promise callback) {
-        waitForConnection(() -> { if ( binder!= null ) { binder.getPlayback().skipToNext(callback); }});
+        waitForConnection(() -> { if ( binder!= null && binder.getPlayback() != null ) { binder.getPlayback().skipToNext(callback); }});
     }
 
     @ReactMethod
     public void skipToPrevious(final Promise callback) {
-        waitForConnection(() -> { if ( binder != null ) { binder.getPlayback().skipToPrevious(callback); }});
+        waitForConnection(() -> { if ( binder != null && binder.getPlayback() != null ) { binder.getPlayback().skipToPrevious(callback); }});
     }
 
     @ReactMethod
@@ -476,7 +478,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     @ReactMethod
     public void getBufferedPosition(final Promise callback) {
         waitForConnection(() -> {
-            long position = binder.getPlayback().getBufferedPosition();
+            long position = binder == null || binder.getPlayback() == null ? C.POSITION_UNSET : binder.getPlayback().getBufferedPosition();
 
             if(position == C.POSITION_UNSET) {
                 callback.resolve(Utils.toSeconds(0));
