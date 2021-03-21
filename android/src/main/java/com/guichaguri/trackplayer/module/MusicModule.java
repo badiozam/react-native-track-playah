@@ -325,17 +325,17 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
 
     @ReactMethod
     public void skip(final String track, final Promise callback) {
-        waitForConnection(() -> { if ( binder != null ) { binder.getPlayback().skip(track, callback); }});
+        waitForConnection(() -> { if ( binder != null && binder.getPlayback() != null ) { binder.getPlayback().skip(track, callback); }});
     }
 
     @ReactMethod
     public void skipToNext(final Promise callback) {
-        waitForConnection(() -> { if ( binder!= null ) { binder.getPlayback().skipToNext(callback); }});
+        waitForConnection(() -> { if ( binder!= null && binder.getPlayback() != null ) { binder.getPlayback().skipToNext(callback); }});
     }
 
     @ReactMethod
     public void skipToPrevious(final Promise callback) {
-        waitForConnection(() -> { if ( binder != null ) { binder.getPlayback().skipToPrevious(callback); }});
+        waitForConnection(() -> { if ( binder != null && binder.getPlayback() != null ) { binder.getPlayback().skipToPrevious(callback); }});
     }
 
     @ReactMethod
@@ -476,7 +476,7 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     @ReactMethod
     public void getBufferedPosition(final Promise callback) {
         waitForConnection(() -> {
-            long position = binder.getPlayback().getBufferedPosition();
+            long position = binder == null || binder.getPlayback() == null ? C.POSITION_UNSET : binder.getPlayback().getBufferedPosition();
 
             if(position == C.POSITION_UNSET) {
                 callback.resolve(Utils.toSeconds(0));
