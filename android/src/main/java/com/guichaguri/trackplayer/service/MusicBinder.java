@@ -23,7 +23,7 @@ public class MusicBinder extends Binder {
     public void post(Runnable r) {
 	Log.d(Utils.LOG, "Service = " + service.handler);
 	Log.d(Utils.LOG, "Service handler = " + service.handler);
-        service.handler.post(r);
+        if ( service != null && service.handler != null ) { service.handler.post(r); }
     }
 
     public ExoPlayback getPlayback() {

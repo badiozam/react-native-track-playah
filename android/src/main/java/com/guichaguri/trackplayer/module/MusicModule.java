@@ -67,16 +67,18 @@ public class MusicModule extends ReactContextBaseJavaModule implements ServiceCo
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         binder = (MusicBinder)service;
-        connecting = false;
+	if ( binder != null ) {
+            connecting = false;
 
-        // Reapply options that user set before with updateOptions
-        if (options != null) {
-            binder.updateOptions(options);
-        }
+            // Reapply options that user set before with updateOptions
+            if (options != null) {
+                binder.updateOptions(options);
+            }
 
-        // Triggers all callbacks
-        while(!initCallbacks.isEmpty()) {
-            binder.post(initCallbacks.remove());
+            // Triggers all callbacks
+            while(!initCallbacks.isEmpty()) {
+                binder.post(initCallbacks.remove());
+            }
         }
     }
 
