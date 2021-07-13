@@ -183,7 +183,7 @@ public abstract class ExoPlayback<T extends Player> implements EventListener, Me
     public long getDuration() {
         Track current = getCurrentTrack();
 
-        if (current != null && current.duration > 0) {
+        if (current != null && current.duration > 2) {
             return current.duration;
         }
 
